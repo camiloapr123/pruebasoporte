@@ -45,7 +45,11 @@ Al revisar mas a fondo el archivo `nginx.conf`, se encontro que el puerto asigna
 
 Algo que se habia denotado anteriorment es que el servicio de conexión a la API arrancaba sin esperar a que PostgreSQL estuviera completamente listo para recibir conexiones. Esto podría provocar errores de conexión a la base de datos durante el inicio, por lo que se añade una verificación para poder asegurar que el servicio corra unicamente cuando la conexión con PostgreSQL estuviera completamente implementado:
 
+Inicialmente realizamos la verificación mirando que cada 5 sgs con un tiempo de espera de 5 sgs con un maximo de 5 intentos que la conexión este implementada correctamente:
+
 ![Third Change](assets/Third%20change.png)
+
+Por último se añade que el servicio API no se inicie hasta que la conexión con la base de datos este completa:
 
 ![Fourth Change](assets/Fourth%20change.png)
 
@@ -161,6 +165,7 @@ services:
 
 | Archivo | Cambio | Motivo |
 |---------|--------|--------|
+| `docker-compose.yml` | Añadido memoria extra | Poder asignar memoria que permite el arranque normal de la aplicación |
 | `nginx.conf` | Puerto upstream: `8080` → `4500` | El api-service escucha en 4500, no en 8080 |
 | `docker-compose.yml` | Añadido `healthcheck` en `database` | Verificar que Postgres está listo antes de aceptar conexiones |
 | `docker-compose.yml` | `depends_on` con `condition: service_healthy` en `api-service` | Evitar que la API arranque antes de que la BD esté disponible |
