@@ -41,12 +41,9 @@ Al revisar mas a fondo el archivo `nginx.conf`, se encontro que el puerto asigna
 **Impacto:** Nginx intentaba hacer proxy hacia un puerto que no tenía ningún proceso escuchando, resultando en `Connection refused`.
 
 ---
+### Tercer Cambio — Adición de verificación healthcheck en `docker-compose.yml`
 
-### ❌ Falla 2 — Sin healthcheck ni condición de arranque en `docker-compose.yml`
-
-**Archivo:** `docker-compose.yml`
-
-El `api-service` arrancaba sin esperar a que PostgreSQL estuviera completamente listo para recibir conexiones. Esto provocaba errores de conexión a la base de datos durante el inicio.
+Algo que se habia denotado anteriorment es que el servicio de conexión a la API arrancaba sin esperar a que PostgreSQL estuviera completamente listo para recibir conexiones. Esto podría provocar errores de conexión a la base de datos durante el inicio, por lo que se añade una verificación para poder asegurar que el servicio corra unicamente cuando la conexión con PostgreSQL estuviera completamente implementado:
 
 ```yaml
 # ❌ ANTES — Sin healthcheck en database, sin condición en api-service
