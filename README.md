@@ -187,7 +187,7 @@ services:
 ### Resultado esperado
 
 ```
-![Resultado Final](assets/Microservice%20working.png)
+![Resultado Final](assets/microservice-working.png)
 ```
 
 ---
