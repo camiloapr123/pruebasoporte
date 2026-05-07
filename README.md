@@ -20,6 +20,8 @@ Al iniciar el entorno con `docker-compose up -d`, se obtuvieron errores al inici
 
 ![First Change](assets/First%20change.png)
 
+**Impacto:** Con un límite de `5M`, el `api-service` era terminado inmediatamente por el sistema operativo al no tener suficiente memoria para ejecutar Node.js, resultando en un código de salida **137** (*OOMKilled*). Aumentar el límite a `128M` permite que el servicio arranque y opere con estabilidad.
+
 ---
 ### Segundo Cambio — Coordinación de puertos para la conexión con el servicio API en `docker-compose.yml`
 
