@@ -12,17 +12,18 @@ Se reportó una caída crítica en el portal de clientes tras un despliegue reci
 
 ---
 
-## 🔍 Diagnóstico
+## 🔍 Diagnóstico y Solución de Problemas
 
-Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error al tratar de conectar con el servicio directamente:
-
-![First Error](assets/First%20visible%20error.png)
-
-Al revisar el archivo `docker-compose.yml` se encontró que la memoria asignada para el `api-service` no era suficiente. Al ejecutar `docker compose logs api-service` el proceso terminaba con el código **137**, lo que indica que el sistema operativo finalizó el proceso por falta de memoria (*OOMKilled*). Se corrigió el límite a `128M`, que es el valor mínimo recomendado para un servicio Node.js. Como buena práctica, este valor también puede calcularse midiendo el consumo real con `docker stats` y colocando el doble para absorber picos de carga.
+Al iniciar el entorno con `docker-compose up -d`, se obtuvieron errores al inicializar los contenedores. Revisando los logs creados para determinar que pudo haber causado el error al inicializar se encontró que la memoria asignada para el `api-service` no era suficiente. Al ejecutar `docker compose logs api-service` el proceso terminaba con el código **137**, lo que indica que el sistema operativo finalizó el proceso por falta de memoria (*OOMKilled*). Se corrigió el límite a `128M` dentro del archivo `docker-compose.yml`, que es el valor mínimo recomendado para un servicio Node.js. Como buena práctica, este valor también puede calcularse midiendo el consumo real con `docker stats` y colocando el doble para absorber picos de carga.
 
 ![First Error](assets/First%20change.png)
 
-y en los logs de nginx en Docker
+
+Una vez los contenedores se crearon exitosamente se obtuvo el siguiente error al tratar de conectar con el servicio directamente:
+
+![First Error](assets/First%20visible%20error.png)
+
+Al buscar especificamente en los logs creados por Docker se encontro con:
 
 ```
 2026/05/07 19:55:00 [error] 30#30: *1 connect() failed (111: Connection refused)
@@ -30,31 +31,9 @@ while connecting to upstream, client: 172.18.0.1, server: ,
 request: "GET / HTTP/1.1", upstream: "http://172.18.0.3:8080/", host: "localhost:8080"
 ```
 
-### Causa Raíz
+Al revisar mas a fondo el archivo `nginx.conf`, se encontro que el puerto asignado no era el correcto para la conexión con la API. El upstream de nginx apuntaba al puerto `8080` del `api-service`, pero el servicio Node.js estaba configurado para escuchar en el puerto `4500` (definido en la variable de entorno `target_output` en el archivo `docker-compose.yml`).
 
-Se identificaron **dos fallas** en la configuración del entorno:
 
----
-
-### ❌ Falla 1 — Puerto incorrecto en `nginx.conf`
-
-**Archivo:** `nginx.conf`
-
-El upstream de nginx apuntaba al puerto `8080` del `api-service`, pero el servicio Node.js estaba configurado para escuchar en el puerto `4500` (definido en la variable de entorno `target_output`).
-
-```nginx
-# ❌ ANTES — Puerto incorrecto
-upstream api_servers {
-    server api-service:8080;
-}
-```
-
-```nginx
-# ✅ DESPUÉS — Puerto corregido
-upstream api_servers {
-    server api-service:4500;
-}
-```
 
 **Impacto:** Nginx intentaba hacer proxy hacia un puerto que no tenía ningún proceso escuchando, resultando en `Connection refused`.
 
