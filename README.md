@@ -184,24 +184,6 @@ services:
 
 ---
 
-## 🚀 Cómo ejecutar el entorno
-
-```bash
-# 1. Clonar el repositorio
-git clone <url-del-repo>
-cd <nombre-del-repo>
-
-# 2. Levantar los servicios
-docker-compose up -d
-
-# 3. Verificar que todos los contenedores están corriendo y saludables
-docker-compose ps
-
-# 4. Probar el servicio
-curl http://localhost:8080
-# o abrir http://localhost:8080 en el navegador
-```
-
 ### Resultado esperado
 
 ```
