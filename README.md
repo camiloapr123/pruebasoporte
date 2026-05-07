@@ -14,11 +14,13 @@ Se reportó una caída crítica en el portal de clientes tras un despliegue reci
 
 ## 🔍 Diagnóstico
 
-Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error al tratar de conectar con el servicio y en los logs de nginx en Docker:
-
+Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error al tratar de conectar con el servicio directamente:
 
 ![First Error](assets/First%20visible%20error.png)
 
+Al revisar especificamente el archivo `docker-compose.yml` se encontro que la memoria total asignada para el despliegue del servicio no era suficiente, dado que al correr `docker compose logs api-service` el servicio terminaba el proceso con un codigo 37 indicando que no hay suficiente memoria para correr el servicio. Teniendo esto en cuenta se modifica la memoria suficiente al valor general que es 128M pero también se podria cambiar por regla general al doble de lo que consume en promedio para evitar picos:
+
+y en los logs de nginx en Docker
 
 ```
 2026/05/07 19:55:00 [error] 30#30: *1 connect() failed (111: Connection refused)
