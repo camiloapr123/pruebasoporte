@@ -45,31 +45,10 @@ Al revisar mas a fondo el archivo `nginx.conf`, se encontro que el puerto asigna
 
 Algo que se habia denotado anteriorment es que el servicio de conexión a la API arrancaba sin esperar a que PostgreSQL estuviera completamente listo para recibir conexiones. Esto podría provocar errores de conexión a la base de datos durante el inicio, por lo que se añade una verificación para poder asegurar que el servicio corra unicamente cuando la conexión con PostgreSQL estuviera completamente implementado:
 
-```yaml
-# ❌ ANTES — Sin healthcheck en database, sin condición en api-service
-database:
-  image: postgres:15-alpine
-  # Sin verificación de estado
+![Third Change](assets/Third%20change.png)
 
-api-service:
-  depends_on:
-    - database  # Solo espera que el contenedor inicie, no que esté listo
-```
+![Fourth Change](assets/Fourth%20change.png)
 
-```yaml
-# ✅ DESPUÉS — Con healthcheck y condición de espera
-database:
-  image: postgres:15-alpine
-  healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U admin -d main_db"]
-    interval: 5s
-    timeout: 5s
-    retries: 5
-
-api-service:
-  depends_on:
-    database:
-      condition: service_healthy  # Espera a que Postgres pase el healthcheck
 ```
 
 **Impacto:** Sin el healthcheck, el `api-service` se conectaba antes de que PostgreSQL terminara de inicializar, causando errores intermitentes de conexión.
