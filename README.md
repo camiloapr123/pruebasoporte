@@ -187,7 +187,7 @@ services:
 ### Resultado esperado
 
 ```
-<h1>Ingeniero de Soporte</h1><label>Has resuelto el incidente</label>
+![Resultado Final](assets/microservice-working.png)
 ```
 
 ---
