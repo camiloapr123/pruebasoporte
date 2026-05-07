@@ -14,7 +14,11 @@ Se reportó una caída crítica en el portal de clientes tras un despliegue reci
 
 ## 🔍 Diagnóstico
 
-Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error en los logs de nginx:
+Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error al tratar de conectar con el servicio y en los logs de nginx en Docker:
+
+
+![First Error](assets/First%20visible%20error.png)
+
 
 ```
 2026/05/07 19:55:00 [error] 30#30: *1 connect() failed (111: Connection refused)
@@ -25,8 +29,6 @@ request: "GET / HTTP/1.1", upstream: "http://172.18.0.3:8080/", host: "localhost
 ### Causa Raíz
 
 Se identificaron **dos fallas** en la configuración del entorno:
-
-![First Error](assets/First%20visible%20error.png)
 
 ---
 
