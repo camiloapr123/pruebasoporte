@@ -20,6 +20,7 @@ Al iniciar el entorno con `docker-compose up -d`, se obtuvieron errores al inici
 
 ![First Change](assets/First%20change.png)
 
+---
 ### Segundo Cambio — Coordinación de puertos para la conexión con el servicio API en `docker-compose.yml`
 
 Una vez los contenedores se crearon exitosamente se obtuvo el siguiente error al tratar de conectar con el servicio directamente:
@@ -52,8 +53,6 @@ Inicialmente realizamos la verificación mirando que cada 5 sgs con un tiempo de
 Por último se añade que el servicio API no se inicie hasta que la conexión con la base de datos este completa:
 
 ![Fourth Change](assets/Fourth%20change.png)
-
-```
 
 **Impacto:** Sin el healthcheck, el `api-service` se conectaba antes de que PostgreSQL terminara de inicializar, causando errores intermitentes de conexión.
 
