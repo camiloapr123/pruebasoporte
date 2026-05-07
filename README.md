@@ -26,6 +26,8 @@ request: "GET / HTTP/1.1", upstream: "http://172.18.0.3:8080/", host: "localhost
 
 Se identificaron **dos fallas** en la configuración del entorno:
 
+![First Error](assets/First%20Visible%20Error.png)
+
 ---
 
 ### ❌ Falla 1 — Puerto incorrecto en `nginx.conf`
