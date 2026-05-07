@@ -18,8 +18,7 @@ Al iniciar el entorno con `docker-compose up -d`, se obtuvo el siguiente error a
 
 ![First Error](assets/First%20visible%20error.png)
 
-Claro, aquí está en markdown listo para pegar en el README:
-markdownAl revisar el archivo `docker-compose.yml` se encontró que la memoria asignada para el `api-service` no era suficiente. Al ejecutar `docker compose logs api-service` el proceso terminaba con el código **137**, lo que indica que el sistema operativo finalizó el proceso por falta de memoria (*OOMKilled*). Se corrigió el límite a `128M`, que es el valor mínimo recomendado para un servicio Node.js. Como buena práctica, este valor también puede calcularse midiendo el consumo real con `docker stats` y colocando el doble para absorber picos de carga.
+Al revisar el archivo `docker-compose.yml` se encontró que la memoria asignada para el `api-service` no era suficiente. Al ejecutar `docker compose logs api-service` el proceso terminaba con el código **137**, lo que indica que el sistema operativo finalizó el proceso por falta de memoria (*OOMKilled*). Se corrigió el límite a `128M`, que es el valor mínimo recomendado para un servicio Node.js. Como buena práctica, este valor también puede calcularse midiendo el consumo real con `docker stats` y colocando el doble para absorber picos de carga.
 
 ![First Error](assets/First%20change.png)
 
