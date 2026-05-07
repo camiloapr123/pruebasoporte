@@ -8,18 +8,25 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password123
       POSTGRES_DB: main_db
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d main_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   api-service:
     image: node:18-alpine
     container_name: lappiz-api
+    depends_on: 
+      database: 
+        condition: service_healthy
     environment:
-      DB_HOST: 'localhost'
+      DB_HOST: 'database'
       DB_PORT: 5432
       target_output: 4500
     deploy:
       resources:
         limits:
-          memory: 5M
+          memory: 128M
     command: >
       node -e "
       const http = require('http');
